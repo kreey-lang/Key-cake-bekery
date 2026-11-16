@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin.html
 
-Sitemap: https://keycakebakery.vercel.app/sitemap.xml
+Sitemap: https://keycakebekery.vercel.app/sitemap.xml
