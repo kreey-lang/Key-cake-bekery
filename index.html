@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Key Cake & Bakery Pangkalpinang — Kue Ulang Tahun, Custom Cake & Donat</title>
+  <meta name="description" content="Toko kue ulang tahun ready (50k–100k), kue karakter & custom cake (70k–185k+), donat empuk, dan brownies 100% halal di Pangkalpinang. Tersedia di Outlet Opas Indah & Rumah Semabung." />
+  <meta name="keywords" content="kue ulang tahun pangkalpinang, custom cake pangkalpinang, key cake and bakery, donat ultah pangkalpinang, kue karakter pangkalpinang, toko kue opas indah, toko kue semabung" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- OPEN GRAPH (PREVIEW WHATSAPP & MEDIA SOSIAL) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Key Cake & Bakery — Kue Ulang Tahun & Custom Cake Pangkalpinang" />
+  <meta property="og:description" content="Kue ultah ready 50k–100k, kue karakter base brownis mulai 70k, donat ultah & bolu slice 100% halal. Ambil di Outlet Opas Indah atau Rumah Semabung." />
+  <meta property="og:locale" content="id_ID" />
+
+  <!-- GOOGLE ANALYTICS (G-QFHTLN1YT5) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QFHTLN1YT5"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-QFHTLN1YT5');
+  </script>
+
+  <!-- STRUCTURED DATA / SCHEMA MARKUP TOKO KUE LOKAL -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Bakery",
+    "name": "Key Cake & Bakery",
+    "alternateName": "Key & Co.",
+    "description": "Toko kue ulang tahun ready, kue karakter custom, donat empuk, dan brownies 100% halal di Pangkalpinang.",
+    "telephone": "+6281553027705",
+    "priceRange": "Rp 3.000 - Rp 185.000+",
+    "servesCuisine": "Bakery, Birthday Cake, Donuts, Brownies",
+    "openingHours": "Mo-Su 08:00-21:00",
+    "address": [
+      {
+        "@type": "PostalAddress",
+        "streetAddress": "Outlet Opas Indah, Masuk simpang depan SPBU Opas (±20 meter dari simpang)",
+        "addressLocality": "Pangkalpinang",
+        "addressRegion": "Kepulauan Bangka Belitung",
+        "addressCountry": "ID"
+      },
+      {
+        "@type": "PostalAddress",
+        "streetAddress": "Rumah Semabung (Arah bandara lama)",
+        "addressLocality": "Pangkalpinang",
+        "addressRegion": "Kepulauan Bangka Belitung",
+        "addressCountry": "ID"
+      }
+    ],
+    "sameAs": [
+      "https://instagram.com/key.cakebakery"
+    ]
+  }
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#FDF8F5',
+            blush: '#FCE7EB',
+            blushSoft: '#FDF1F4',
+            rosegold: '#B76E79',
+            rosegoldDark: '#9A5560',
+            espresso: '#3B282C',
+          },
+          fontFamily: {
+            serif: ['"Cormorant Garamond"', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { background-color: #FDF8F5; color: #3B282C; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-brand { font-family: 'Cormorant Garamond', serif; }
+
+    /* ANIMASI HALUS SCROLL REVEAL & INTERAKSI */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+    .animate-float {
+      animation: floatSlow 4.5s ease-in-out infinite;
+    }
+    .btn-press:active {
+      transform: scale(0.96);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-blush selection:text-espresso">
+
+  <!-- TOAST NOTIFIKASI -->
+  <div id="toast-container" class="fixed top-20 right-4 z-50 flex flex-col gap-2 max-w-xs w-full pointer-events-none"></div>
+
+  <!-- HEADER NAVIGASI -->
+  <header class="sticky top-0 z-40 bg-cream/90 backdrop-blur-md border-b border-blush/80 transition-all">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+      <a href="#" class="flex items-center gap-2.5 group">
+        <div class="w-10 h-10 rounded-full bg-blush border border-rosegold/30 text-rosegold font-brand font-bold text-lg flex items-center justify-center shadow-xs group-hover:scale-105 transition">
+          K&C
+        </div>
+        <div>
+          <span class="font-brand text-xl sm:text-2xl font-bold tracking-tight text-espresso block leading-none">Key Cake & Bakery</span>
+          <span class="text-[10px] sm:text-[11px] text-rosegold font-semibold tracking-wide">Opas Indah & Semabung • Pangkalpinang</span>
+        </div>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-6 text-xs font-semibold text-espresso/80">
+        <a href="#katalog" class="hover:text-rosegold transition">Katalog Menu</a>
+        <a href="#custom-cake" class="hover:text-rosegold transition">Pesan Custom</a>
+        <a href="#lokasi-faq" class="hover:text-rosegold transition">Lokasi & FAQ</a>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <a href="#custom-cake"
+          class="hidden sm:inline-flex px-3.5 py-2 rounded-full border border-rosegold/40 text-xs font-semibold text-rosegold hover:bg-blush/60 transition btn-press">
+          Custom Cake
+        </a>
+        <button onclick="openCart()"
+          class="relative px-3.5 py-2 rounded-full bg-rosegold hover:bg-rosegoldDark text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm transition btn-press">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+          <span>Keranjang</span>
+          <span id="cart-badge" class="ml-0.5 px-1.5 py-0.2 rounded-full bg-white text-rosegold text-[10px] font-bold">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION (BERSIH TANPA KOTAK PUTIH KAKU) -->
+  <section class="relative overflow-hidden pt-8 pb-14 sm:pt-14 sm:pb-20">
+    <div class="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-blush/60 blur-3xl pointer-events-none"></div>
+    <div class="absolute top-32 -left-24 w-72 h-72 rounded-full bg-rosegold/10 blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+      <div class="lg:col-span-7 space-y-5 text-center lg:text-left reveal visible">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blush/80 border border-rosegold/20 text-[11px] font-semibold text-rosegold">
+          <span>✨ 100% Halal & Fresh Setiap Hari • Pangkalpinang</span>
+        </div>
+
+        <h1 class="font-brand text-4xl sm:text-5xl lg:text-6xl font-bold text-espresso leading-[1.12]">
+          Maniskan Momen Spesial dengan <span class="italic text-rosegold">Kue Pilihan Terbaik</span>
+        </h1>
+
+        <p class="text-sm sm:text-base text-espresso/75 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+          Tersedia kue ulang tahun ready setiap hari mulai <strong>Rp 50.000</strong>, kue karakter base brownis lembut, donat ulang tahun, hingga pesanan custom sesuai tema impianmu.
+        </p>
+
+        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-1">
+          <a href="#katalog"
+            class="px-6 py-3.5 rounded-full bg-rosegold hover:bg-rosegoldDark text-white text-xs sm:text-sm font-semibold shadow-md hover:shadow-lg transition btn-press">
+            Lihat Katalog & Harga
+          </a>
+          <a href="#custom-cake"
+            class="px-6 py-3.5 rounded-full bg-white hover:bg-blush/50 border border-rosegold/40 text-espresso text-xs sm:text-sm font-semibold transition btn-press">
+            Request Kue Custom
+          </a>
+        </div>
+
+        <div class="pt-3 flex flex-wrap items-center justify-center lg:justify-start gap-x-5 gap-y-2 text-xs text-espresso/70">
+          <span class="flex items-center gap-1.5">📍 Ambil di Outlet Opas Indah</span>
+          <span class="flex items-center gap-1.5">🏠 Atau Rumah Semabung</span>
+          <span class="flex items-center gap-1.5">🕗 Buka 08.00 – 21.00 WIB</span>
+        </div>
+      </div>
+
+      <!-- VISUAL HERO BERSIH TANPA BACKGROUND KOTAK -->
+      <div class="lg:col-span-5 flex flex-col items-center justify-center relative reveal visible">
+        <div class="relative w-64 h-64 sm:w-80 sm:h-80 flex items-center justify-center">
+          <div class="absolute inset-3 rounded-full bg-gradient-to-tr from-blush via-blushSoft to-white/40 border border-rosegold/20 shadow-inner"></div>
+          <img id="hero-cake-img"
+            src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=700&q=80"
+            alt="Kue Ulang Tahun Key Cake & Bakery Pangkalpinang"
+            class="relative z-10 w-56 h-56 sm:w-72 sm:h-72 object-cover rounded-full shadow-xl border-4 border-white/80 animate-float" />
+          
+          <div class="absolute -bottom-2 right-2 sm:right-4 z-20 bg-white/95 backdrop-blur-xs border border-blush px-4 py-2.5 rounded-2xl shadow-md text-left">
+            <p class="text-[10px] uppercase tracking-wider font-bold text-rosegold">Ready di Outlet</p>
+            <p class="font-brand text-lg font-bold text-espresso leading-tight">Mulai Rp 50.000</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+    <!-- KEUNGGULAN SINGKAT -->
+  <section class="py-6 border-y border-blush/80 bg-white/60">
+    <div class="max-w-6xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+      <div class="p-3 reveal">
+        <p class="font-brand text-xl font-bold text-rosegold">100% Halal</p>
+        <p class="text-xs text-espresso/70 mt-0.5">Bahan higienis & terjamin</p>
+      </div>
+      <div class="p-3 reveal">
+        <p class="font-brand text-xl font-bold text-rosegold">Base Brownis</p>
+        <p class="text-xs text-espresso/70 mt-0.5">Tekstur lembut & nyoklat</p>
+      </div>
+      <div class="p-3 reveal">
+        <p class="font-brand text-xl font-bold text-rosegold">Ready Setiap Hari</p>
+        <p class="text-xs text-espresso/70 mt-0.5">Bisa dadakan di outlet</p>
+      </div>
+      <div class="p-3 reveal">
+        <p class="font-brand text-xl font-bold text-rosegold">2 Titik Ambil</p>
+        <p class="text-xs text-espresso/70 mt-0.5">Opas Indah & Semabung</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ETALASE KATALOG MENU -->
+  <section id="katalog" class="py-14 sm:py-20">
+    <div class="max-w-6xl mx-auto px-4 space-y-8">
+      <div class="text-center max-w-2xl mx-auto space-y-2 reveal">
+        <span class="text-xs font-bold uppercase tracking-widest text-rosegold">Pilihan Menu & Harga</span>
+        <h2 class="font-brand text-3xl sm:text-4xl font-bold text-espresso">Katalog Key Cake & Bakery</h2>
+        <p class="text-xs sm:text-sm text-espresso/70">
+          Pilih kue yang ready hari ini atau masukkan ke keranjang untuk pemesanan langsung via WhatsApp.
+        </p>
+      </div>
+
+      <!-- TAB FILTER KATEGORI -->
+      <div id="category-tabs" class="flex items-center justify-start sm:justify-center gap-2 overflow-x-auto pb-2 reveal">
+        <button onclick="filterCategory('Semua')" data-cat="Semua"
+          class="cat-btn px-4 py-2 rounded-full text-xs font-semibold bg-rosegold text-white shadow-xs transition whitespace-nowrap btn-press">
+          Semua Menu
+        </button>
+        <button onclick="filterCategory('Kue Ulang Tahun')" data-cat="Kue Ulang Tahun"
+          class="cat-btn px-4 py-2 rounded-full text-xs font-semibold bg-white border border-blush text-espresso/80 hover:bg-blush/50 transition whitespace-nowrap btn-press">
+          Kue Ulang Tahun
+        </button>
+        <button onclick="filterCategory('Custom & Karakter')" data-cat="Custom & Karakter"
+          class="cat-btn px-4 py-2 rounded-full text-xs font-semibold bg-white border border-blush text-espresso/80 hover:bg-blush/50 transition whitespace-nowrap btn-press">
+          Custom & Karakter
+        </button>
+        <button onclick="filterCategory('Donat')" data-cat="Donat"
+          class="cat-btn px-4 py-2 rounded-full text-xs font-semibold bg-white border border-blush text-espresso/80 hover:bg-blush/50 transition whitespace-nowrap btn-press">
+          Donat Empuk
+        </button>
+        <button onclick="filterCategory('Bolu & Brownies')" data-cat="Bolu & Brownies"
+          class="cat-btn px-4 py-2 rounded-full text-xs font-semibold bg-white border border-blush text-espresso/80 hover:bg-blush/50 transition whitespace-nowrap btn-press">
+          Bolu & Brownies
+        </button>
+      </div>
+
+      <!-- LOADING & GRID PRODUK -->
+      <div id="catalog-loading" class="text-center py-8 text-xs text-espresso/60">
+        Menyiapkan etalase kue terbaru...
+      </div>
+
+      <div id="catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+
+      <!-- CATATAN HARGA -->
+      <div class="bg-blushSoft border border-blush rounded-2xl p-4 text-center max-w-2xl mx-auto reveal">
+        <p class="text-xs text-espresso/80">
+          <strong>Catatan:</strong> <span id="price-note-text">Harga bisa berubah, tidak untuk seterusnya.</span> Pemesanan kue custom & karakter disarankan sebelum hari-H.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORMULIR PESANAN KUE CUSTOM -->
+  <section id="custom-cake" class="py-14 sm:py-20 bg-white/80 border-y border-blush">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="text-center max-w-xl mx-auto space-y-2 mb-8 reveal">
+        <span class="text-xs font-bold uppercase tracking-widest text-rosegold">Request Tema & Model</span>
+        <h2 class="font-brand text-3xl sm:text-4xl font-bold text-espresso">Pesan Kue Custom / Karakter</h2>
+        <p class="text-xs sm:text-sm text-espresso/70">
+          Ingin karakter Spider-Man, Kuromi, Cinnamoroll, Roblox, tema bola, atau desain khusus lainnya? Isi detail di bawah ini.
+        </p>
+      </div>
+
+      <form id="custom-order-form" class="bg-cream border border-blush rounded-3xl p-5 sm:p-8 shadow-sm space-y-5 reveal">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-espresso mb-1.5">Nama Pemesan *</label>
+            <input type="text" id="cust-name" required placeholder="Masukkan nama kamu"
+              class="w-full px-4 py-3 rounded-xl border border-blush bg-white text-sm focus:outline-none focus:border-rosegold" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-espresso mb-1.5">Tanggal Acara / Pengambilan *</label>
+            <input type="date" id="cust-date" required
+              class="w-full px-4 py-3 rounded-xl border border-blush bg-white text-sm focus:outline-none focus:border-rosegold" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-espresso mb-1.5">Pilihan Budget / Ukuran</label>
+            <select id="cust-size" class="w-full px-4 py-3 rounded-xl border border-blush bg-white text-sm focus:outline-none focus:border-rosegold">
+              <option value="Karakter Mini / Standar (Rp 70.000)">Karakter Standar (Rp 70.000)</option>
+              <option value="Ukuran Sedang (Rp 95.000)">Ukuran Sedang (Rp 95.000)</option>
+              <option value="Ukuran Medium Plus (Rp 120.000)">Medium Plus (Rp 120.000)</option>
+              <option value="Ukuran Besar (Rp 150.000)">Ukuran Besar (Rp 150.000)</option>
+              <option value="Special / Tingkat (Rp 185.000+)">Special / Tingkat (Rp 185.000+)</option>
+              <option value="Donat Ultah Isi 6 / Isi 12">Donat Ultah (Isi 6 / Isi 12)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-espresso mb-1.5">Pilihan Base Cake</label>
+            <select id="cust-flavor" class="w-full px-4 py-3 rounded-xl border border-blush bg-white text-sm focus:outline-none focus:border-rosegold">
+              <option value="Brownies Cokelat (Favorit)">Brownies Cokelat (Favorit)</option>
+              <option value="Sponge Cake Vanilla">Sponge Cake Vanilla</option>
+              <option value="Sponge Cake Cokelat">Sponge Cake Cokelat</option>
+              <option value="Donat Empuk">Donat Empuk</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-espresso mb-1.5">Lokasi Pengambilan</label>
+            <select id="cust-location" class="w-full px-4 py-3 rounded-xl border border-blush bg-white text-sm focus:outline-none focus:border-rosegold">
+              <option value="Outlet Opas Indah (Depan SPBU)">Outlet Opas Indah</option>
+              <option value="Rumah Semabung (Arah Bandara Lama)">Rumah Semabung</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ADD-ONS PERLENGKAPAN -->
+        <div>
+          <label class="block text-xs font-semibold text-espresso mb-2">Perlengkapan Tambahan (Add-On)</label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <label class="flex items-center gap-2.5 p-3 rounded-xl border border-blush bg-white cursor-pointer hover:border-rosegold/50 transition">
+              <input type="checkbox" name="addon" value="Pisau Kue" class="accent-rosegold w-4 h-4" />
+              <span class="text-xs font-medium">Pisau Potong Kue</span>
+            </label>
+            <label class="flex items-center gap-2.5 p-3 rounded-xl border border-blush bg-white cursor-pointer hover:border-rosegold/50 transition">
+              <input type="checkbox" name="addon" value="Ucapan Donat (+Rp 5rb Free Lilin Kecil)" class="accent-rosegold w-4 h-4" />
+              <span class="text-xs font-medium">Ucapan Donat (+5rb)</span>
+            </label>
+            <label class="flex items-center gap-2.5 p-3 rounded-xl border border-blush bg-white cursor-pointer hover:border-rosegold/50 transition">
+              <input type="checkbox" id="addon-candle-num" value="Lilin Angka" onchange="toggleCandleInput()" class="accent-rosegold w-4 h-4" />
+              <span class="text-xs font-medium">Lilin Angka</span>
+            </label>
+          </div>
+
+          <div id="candle-number-wrap" class="hidden mt-3">
+            <input type="text" id="candle-number-val" placeholder="Tulis angka lilin yang diminta (misal: 5 atau 17)"
+              class="w-full sm:w-72 px-4 py-2.5 rounded-xl border border-rosegold/50 bg-white text-xs focus:outline-none" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-espresso mb-1.5">Tulisan Ucapan & Konsep Desain *</label>
+          <textarea id="cust-notes" rows="3" required placeholder="Contoh: Tema Kuromi warna ungu pastel, tulisan 'Selamat Ulang Tahun Adik Ke-7'..."
+            class="w-full px-4 py-3 rounded-xl border border-blush bg-white text-sm focus:outline-none focus:border-rosegold"></textarea>
+        </div>
+
+        <button type="submit" id="submit-custom-btn"
+          class="w-full py-3.5 rounded-xl bg-rosegold hover:bg-rosegoldDark text-white font-semibold text-sm shadow-md transition flex items-center justify-center gap-2 btn-press">
+          <span>Kirim Pesanan Custom ke WhatsApp</span>
+          <span>↗</span>
+        </button>
+      </form>
+    </div>
+  </section>
+    <!-- LOKASI & FAQ -->
+  <section id="lokasi-faq" class="py-14 sm:py-20">
+    <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-10">
+      
+      <!-- 2 TITIK LOKASI -->
+      <div class="lg:col-span-6 space-y-5 reveal">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest text-rosegold">Kunjungi Kami</span>
+          <h2 class="font-brand text-3xl font-bold text-espresso mt-1">2 Lokasi Pengambilan Fleksibel</h2>
+          <p class="text-xs sm:text-sm text-espresso/70 mt-1">Bisa ambil langsung ke outlet atau ke rumah produksi sesuai lokasi terdekatmu.</p>
+        </div>
+
+        <div class="space-y-4">
+          <div class="bg-white border border-blush rounded-2xl p-5 shadow-xs space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blush text-rosegold">Lokasi 1 • Outlet Utama</span>
+              <span class="text-[11px] text-emerald-700 font-semibold">Buka 08.00 – 21.00</span>
+            </div>
+            <h3 class="font-bold text-base text-espresso">Outlet Opas Indah Pangkalpinang</h3>
+            <p id="loc-outlet-text" class="text-xs text-espresso/75 leading-relaxed">
+              Masuk simpang depan SPBU Opas, sekitar ±20 meter dari simpang, Pangkalpinang.
+            </p>
+            <a href="https://www.google.com/maps/search/?api=1&query=Opas+Indah+Pangkalpinang" target="_blank" rel="noopener"
+              class="inline-flex items-center gap-1 text-xs font-semibold text-rosegold hover:underline pt-1">
+              Buka di Google Maps ↗
+            </a>
+          </div>
+
+          <div class="bg-white border border-blush rounded-2xl p-5 shadow-xs space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-cream border border-blush text-espresso">Lokasi 2 • Rumah</span>
+              <span class="text-[11px] text-espresso/60 font-medium">Konfirmasi via WA</span>
+            </div>
+            <h3 class="font-bold text-base text-espresso">Rumah Semabung Pangkalpinang</h3>
+            <p id="loc-home-text" class="text-xs text-espresso/75 leading-relaxed">
+              Kawasan Semabung arah bandara lama, Pangkalpinang.
+            </p>
+            <a href="https://www.google.com/maps/search/?api=1&query=Semabung+Pangkalpinang" target="_blank" rel="noopener"
+              class="inline-flex items-center gap-1 text-xs font-semibold text-rosegold hover:underline pt-1">
+              Buka di Google Maps ↗
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="lg:col-span-6 space-y-5 reveal">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest text-rosegold">Tanya Jawab</span>
+          <h2 class="font-brand text-3xl font-bold text-espresso mt-1">Pertanyaan Umum (FAQ)</h2>
+        </div>
+
+        <div class="space-y-3">
+          <details class="group bg-white border border-blush rounded-2xl p-4" open>
+            <summary class="font-semibold text-xs sm:text-sm text-espresso cursor-pointer flex items-center justify-between list-none">
+              <span>Apakah ada kue ulang tahun yang ready hari ini?</span>
+              <span class="text-rosegold font-bold group-open:rotate-45 transition">+</span>
+            </summary>
+            <p class="text-xs text-espresso/75 mt-2.5 leading-relaxed">
+              Ada! Setiap hari tersedia kue ulang tahun ready untuk anak dan dewasa di kisaran harga <strong>Rp 50.000 – Rp 100.000</strong>, serta kue karakter ready mulai <strong>Rp 70.000</strong> di Outlet Opas Indah (gratis tulisan ucapan).
+            </p>
+          </details>
+
+          <details class="group bg-white border border-blush rounded-2xl p-4">
+            <summary class="font-semibold text-xs sm:text-sm text-espresso cursor-pointer flex items-center justify-between list-none">
+              <span>Berapa harga kue karakter & custom cake?</span>
+              <span class="text-rosegold font-bold group-open:rotate-45 transition">+</span>
+            </summary>
+            <p class="text-xs text-espresso/75 mt-2.5 leading-relaxed">
+              Kue ulang tahun karakter dengan base cake brownis tersedia mulai harga <strong>Rp 70.000, Rp 95.000, Rp 120.000, Rp 150.000, hingga Rp 185.000+</strong> tergantung model, ukuran, dan hiasan kue. Disarankan pemesanan sebelum hari-H.
+            </p>
+          </details>
+
+          <details class="group bg-white border border-blush rounded-2xl p-4">
+            <summary class="font-semibold text-xs sm:text-sm text-espresso cursor-pointer flex items-center justify-between list-none">
+              <span>Bagaimana harga paket donat ulang tahun?</span>
+              <span class="text-rosegold font-bold group-open:rotate-45 transition">+</span>
+            </summary>
+            <p class="text-xs text-espresso/75 mt-2.5 leading-relaxed">
+              Donat empuk tersedia kotak isi 6 seharga <strong>Rp 18.000</strong> dan kotak isi 12 seharga <strong>Rp 35.000</strong>. Jika ingin tambahan ucapan ulang tahun cukup tambah <strong>+Rp 5.000</strong> sudah gratis lilin kecil. Bisa beli yang ready di outlet atau pesan sebelum hari-H.
+            </p>
+          </details>
+
+          <details class="group bg-white border border-blush rounded-2xl p-4">
+            <summary class="font-semibold text-xs sm:text-sm text-espresso cursor-pointer flex items-center justify-between list-none">
+              <span>Apakah semua produk Key Cake & Bakery halal?</span>
+              <span class="text-rosegold font-bold group-open:rotate-45 transition">+</span>
+            </summary>
+            <p class="text-xs text-espresso/75 mt-2.5 leading-relaxed">
+              Ya, 100% halal dan diproduksi fresh setiap hari menggunakan bahan-bahan berkualitas.
+            </p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER & MEDIA SOSIAL RESMI -->
+  <footer class="bg-espresso text-cream/90 pt-12 pb-24 sm:pb-12 mt-auto">
+    <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 pb-8 border-b border-white/10">
+      <div class="space-y-2.5">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-full bg-rosegold text-white font-brand font-bold text-base flex items-center justify-center">
+            K&C
+          </div>
+          <span id="footer-store-name" class="font-brand text-2xl font-bold text-white">Key Cake & Bakery</span>
+        </div>
+        <p class="text-xs text-cream/70 leading-relaxed">
+          Kue ulang tahun ready, custom cake karakter base brownis, donat ultah, dan aneka bolu fresh setiap hari di Pangkalpinang.
+        </p>
+      </div>
+
+      <div class="space-y-2 text-xs">
+        <h4 class="font-bold text-white uppercase tracking-wider text-[11px]">Kontak & Jam Buka</h4>
+        <p class="text-cream/75">WhatsApp: <a id="footer-wa-link" href="https://wa.me/6281553027705" target="_blank" class="text-blush font-semibold hover:underline">0815-5302-7705</a></p>
+        <p id="footer-hours" class="text-cream/75">Senin – Minggu, 08.00 – 21.00 WIB</p>
+        <p class="text-cream/75">Pangkalpinang, Kepulauan Bangka Belitung</p>
+      </div>
+
+      <div class="space-y-2.5 text-xs">
+        <h4 class="font-bold text-white uppercase tracking-wider text-[11px]">Media Sosial Resmi</h4>
+        <div class="flex flex-wrap gap-2">
+          <a id="footer-ig" href="https://instagram.com/key.cakebakery" target="_blank" rel="noopener"
+            class="px-3 py-1.5 rounded-full bg-white/10 hover:bg-rosegold text-white transition">
+            IG: @key.cakebakery
+          </a>
+          <a id="footer-tiktok" href="https://www.tiktok.com/search?q=Key%20Cake%20%26%20Bakery" target="_blank" rel="noopener"
+            class="px-3 py-1.5 rounded-full bg-white/10 hover:bg-rosegold text-white transition">
+            TikTok: Key Cake & Bakery
+          </a>
+          <a id="footer-fb" href="https://www.facebook.com/search/top?q=Linda%20Ardiyanti" target="_blank" rel="noopener"
+            class="px-3 py-1.5 rounded-full bg-white/10 hover:bg-rosegold text-white transition">
+            FB: Linda Ardiyanti
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-4 pt-6 flex flex-wrap items-center justify-between gap-2 text-[11px] text-cream/50">
+      <p>© 2026 Key Cake & Bakery Pangkalpinang. All rights reserved.</p>
+      <a href="admin.html" class="hover:text-cream/80 transition">Admin Panel</a>
+    </div>
+  </footer>
+
+  <!-- DRAWER KERANJANG BELANJA (SLIDE-OVER) -->
+  <div id="cart-drawer" class="hidden fixed inset-0 z-50">
+    <div onclick="closeCart()" class="absolute inset-0 bg-espresso/50 backdrop-blur-xs transition-opacity"></div>
+    <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-cream shadow-2xl flex flex-col border-l border-blush">
+      <div class="px-5 py-4 bg-white border-b border-blush flex items-center justify-between">
+        <div>
+          <h3 class="font-brand text-2xl font-bold text-espresso">Keranjang Pesanan</h3>
+          <p class="text-[11px] text-espresso/65">Checkout otomatis terformat ke WhatsApp toko</p>
+        </div>
+        <button onclick="closeCart()" class="w-8 h-8 rounded-full bg-cream hover:bg-blush text-espresso font-bold text-sm flex items-center justify-center">✕</button>
+      </div>
+
+      <div id="cart-items" class="flex-1 overflow-y-auto p-5 space-y-3"></div>
+
+      <div class="p-5 bg-white border-t border-blush space-y-3">
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-espresso/60 mb-1">Nama Pemesan</label>
+            <input type="text" id="cart-buyer-name" placeholder="Nama kamu..."
+              class="w-full px-3 py-2 rounded-xl border border-blush text-xs bg-cream/40" />
+          </div>
+          <div>
+            <label class="block text-[10px] font-bold uppercase text-espresso/60 mb-1">Ambil Pesanan Di</label>
+            <select id="cart-pickup" class="w-full px-3 py-2 rounded-xl border border-blush text-xs bg-cream/40">
+              <option value="Outlet Opas Indah">Outlet Opas Indah</option>
+              <option value="Rumah Semabung">Rumah Semabung</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-1">
+          <span class="text-xs font-semibold text-espresso/75">Estimasi Total</span>
+          <span id="cart-total" class="font-brand text-2xl font-bold text-rosegold">Rp 0</span>
+        </div>
+
+        <button onclick="checkoutWhatsApp()"
+          class="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 btn-press">
+          <span>Pesan Sekarang via WhatsApp</span>
+          <span>↗</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BAR MELAYANG KHUSUS MOBILE -->
+  <div id="mobile-cart-bar" class="hidden sm:hidden fixed bottom-3 left-3 right-3 z-30">
+    <button onclick="openCart()"
+      class="w-full px-4 py-3 rounded-2xl bg-espresso text-white shadow-xl flex items-center justify-between text-xs font-semibold">
+      <span class="flex items-center gap-2">
+        <span id="mobile-cart-badge" class="px-2 py-0.5 rounded-full bg-rosegold text-white font-bold">0</span>
+        <span>Item di Keranjang</span>
+      </span>
+      <span id="mobile-cart-total" class="text-blush font-bold">Rp 0 →</span>
+    </button>
+  </div>
+    <script>
+    // =========================================================================
+    // 1. KONFIGURASI SUPABASE & STORE DEFAULTS
+    // =========================================================================
+    const SUPABASE_URL = 'https://ornbvimipxabeywxlqil.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_-jX1OAH23DCvKuyVXHG_cg_iv4ENIsk';
+    const CART_STORAGE_KEY = 'keycake_pkp_cart_v2';
+
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let storeInfo = {
+      store_name: 'Key Cake & Bakery',
+      whatsapp: '6281553027705',
+      instagram: '@key.cakebakery',
+      tiktok: 'Key Cake & Bakery',
+      facebook: 'Linda Ardiyanti',
+      address_outlet: 'Masuk simpang depan SPBU Opas, sekitar ±20 meter dari simpang, Pangkalpinang.',
+      address_home: 'Kawasan Semabung arah bandara lama, Pangkalpinang.',
+      open_hours: 'Senin – Minggu, 08.00 – 21.00 WIB',
+      price_note: 'Harga bisa berubah, tidak untuk seterusnya.'
+    };
+
+    const FALLBACK_PRODUCTS = [
+      {
+        id: 'default-1',
+        name: 'Kue Ulang Tahun Ready',
+        category: 'Kue Ulang Tahun',
+        price: 50000,
+        price_label: 'Rp 50.000 – Rp 100.000',
+        image_url: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80',
+        description: 'Ready setiap hari di outlet untuk anak & dewasa. Bebas pilih model dan gratis tulisan ucapan.',
+        is_ready: true
+      },
+      {
+        id: 'default-2',
+        name: 'Kue Ultah Karakter (Base Brownis)',
+        category: 'Custom & Karakter',
+        price: 70000,
+        price_label: 'Mulai Rp 70.000',
+        image_url: 'https://images.unsplash.com/photo-1562440499-64c9a111f713?auto=format&fit=crop&w=600&q=80',
+        description: 'Varian Spider-Man, Bola, Cinnamoroll, Kuromi, Roblox. Tersedia harga 70k, 95k, 120k, 150k, hingga 185k+.',
+        is_ready: true
+      },
+      {
+        id: 'default-3',
+        name: 'Donat Empuk (Isi 6 / Isi 12)',
+        category: 'Donat',
+        price: 18000,
+        price_label: 'Rp 18.000 (Isi 6) / Rp 35.000 (Isi 12)',
+        image_url: 'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=600&q=80',
+        description: 'Ready di outlet atau pesan sebelum hari-H. Tambah ucapan ultah +Rp 5.000 free lilin kecil.',
+        is_ready: true
+      },
+      {
+        id: 'default-4',
+        name: 'Bolu Slice & Brownies Potongan',
+        category: 'Bolu & Brownies',
+        price: 3000,
+        price_label: 'Mulai Rp 3.000',
+        image_url: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=600&q=80',
+        description: 'Bolu potong dan brownies 100% halal, dipanggang fresh setiap hari.',
+        is_ready: true
+      }
+    ];
+
+    let catalogProducts = [...FALLBACK_PRODUCTS];
+    let activeCategory = 'Semua';
+    let cart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+
+    // =========================================================================
+    // 2. UTILITAS FORMAT & TOAST
+    // =========================================================================
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function formatRupiah(num) {
+      return 'Rp ' + new Intl.NumberFormat('id-ID').format(num || 0);
+    }
+
+    function showToast(msg) {
+      const container = document.getElementById('toast-container');
+      const el = document.createElement('div');
+      el.className = 'bg-espresso text-white px-4 py-3 rounded-xl shadow-lg text-xs font-medium pointer-events-auto transition-all';
+      el.textContent = msg;
+      container.appendChild(el);
+      setTimeout(() => el.remove(), 3000);
+    }
+          // =========================================================================
+    // 3. SINKRONISASI DATA REAL-TIME DARI SUPABASE
+    // =========================================================================
+    async function loadStoreData() {
+      try {
+        const [prodRes, setRes] = await Promise.all([
+          supabaseClient
+            .from('products')
+            .select('*')
+            .eq('is_visible', true)
+            .order('display_order', { ascending: true })
+            .order('created_at', { ascending: false }),
+          supabaseClient
+            .from('store_settings')
+            .select('*')
+            .limit(1)
+        ]);
+
+        if (!prodRes.error && prodRes.data && prodRes.data.length > 0) {
+          catalogProducts = prodRes.data;
+          if (catalogProducts[0].image_url) {
+            document.getElementById('hero-cake-img').src = catalogProducts[0].image_url;
+          }
+        }
+
+        if (!setRes.error && setRes.data && setRes.data.length > 0) {
+          storeInfo = { ...storeInfo, ...setRes.data[0] };
+          applyStoreSettings();
+        }
+      } catch (err) {
+        console.warn('Menggunakan data katalog standar:', err);
+      } finally {
+        document.getElementById('catalog-loading').classList.add('hidden');
+        renderCatalog();
+      }
+    }
+
+    function applyStoreSettings() {
+      document.getElementById('footer-store-name').textContent = storeInfo.store_name;
+      document.getElementById('loc-outlet-text').textContent = storeInfo.address_outlet;
+      document.getElementById('loc-home-text').textContent = storeInfo.address_home;
+      document.getElementById('footer-hours').textContent = storeInfo.open_hours;
+      document.getElementById('price-note-text').textContent = storeInfo.price_note;
+
+      const waClean = String(storeInfo.whatsapp || '6281553027705').replace(/\D/g, '');
+      const waLink = document.getElementById('footer-wa-link');
+      waLink.href = `https://wa.me/${waClean}`;
+      waLink.textContent = waClean.startsWith('62') ? '0' + waClean.slice(2) : waClean;
+
+      if (storeInfo.instagram) {
+        const igHandle = storeInfo.instagram.replace('@', '');
+        const igEl = document.getElementById('footer-ig');
+        igEl.href = `https://instagram.com/${igHandle}`;
+        igEl.textContent = `IG: @${igHandle}`;
+      }
+      if (storeInfo.tiktok) {
+        document.getElementById('footer-tiktok').textContent = `TikTok: ${storeInfo.tiktok}`;
+      }
+      if (storeInfo.facebook) {
+        document.getElementById('footer-fb').textContent = `FB: ${storeInfo.facebook}`;
+      }
+    }
+
+    // =========================================================================
+    // 4. RENDER KATALOG & FILTER KATEGORI
+    // =========================================================================
+    function filterCategory(cat) {
+      activeCategory = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        if (btn.dataset.cat === cat) {
+          btn.className = 'cat-btn px-4 py-2 rounded-full text-xs font-semibold bg-rosegold text-white shadow-xs transition whitespace-nowrap btn-press';
+        } else {
+          btn.className = 'cat-btn px-4 py-2 rounded-full text-xs font-semibold bg-white border border-blush text-espresso/80 hover:bg-blush/50 transition whitespace-nowrap btn-press';
+        }
+      });
+      renderCatalog();
+    }
+
+    function renderCatalog() {
+      const grid = document.getElementById('catalog-grid');
+      const filtered = activeCategory === 'Semua'
+        ? catalogProducts
+        : catalogProducts.filter(p => p.category === activeCategory);
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 bg-white rounded-3xl border border-blush text-xs text-espresso/60">Belum ada produk pada kategori ini.</div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(item => {
+        const imgUrl = item.image_url || 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80';
+        const priceText = item.price_label ? escapeHtml(item.price_label) : formatRupiah(item.price);
+        const waText = encodeURIComponent(`Halo Key Cake & Bakery, saya mau pesan *${item.name}* (${item.price_label || formatRupiah(item.price)}). Apakah ready?`);
+        const waClean = String(storeInfo.whatsapp || '6281553027705').replace(/\D/g, '');
+
+        return `
+          <article class="group bg-white border border-blush rounded-3xl p-4 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between reveal visible">
+            <div>
+              <div class="relative aspect-square rounded-2xl overflow-hidden bg-cream border border-blush/60 mb-4">
+                <img src="${escapeHtml(imgUrl)}" alt="${escapeHtml(item.name)}" loading="lazy"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <span class="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full text-[10px] font-bold backdrop-blur-xs ${item.is_ready ? 'bg-white/90 text-emerald-700' : 'bg-white/90 text-rosegold'}">
+                  ${item.is_ready ? '● Ready Stok' : '✦ Pre-Order'}
+                </span>
+              </div>
+
+              <span class="text-[10px] font-bold uppercase tracking-wider text-rosegold">${escapeHtml(item.category)}</span>
+              <h3 class="font-brand text-xl font-bold text-espresso mt-0.5 leading-snug">${escapeHtml(item.name)}</h3>
+              <p class="text-xs font-bold text-rosegoldDark mt-1">${priceText}</p>
+              <p class="text-xs text-espresso/70 mt-2 line-clamp-3 leading-relaxed">${escapeHtml(item.description || '')}</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 pt-4 mt-4 border-t border-blush/60">
+              <button onclick="addToCart('${item.id}')"
+                class="py-2.5 px-3 rounded-xl bg-blush hover:bg-rosegold text-rosegold hover:text-white text-xs font-semibold transition btn-press">
+                + Keranjang
+              </button>
+              <a href="https://wa.me/${waClean}?text=${waText}" target="_blank" rel="noopener"
+                class="py-2.5 px-3 rounded-xl border border-blush hover:border-rosegold text-espresso text-xs font-semibold text-center transition btn-press">
+                Pesan WA
+              </a>
+            </div>
+          </article>
+        `;
+      }).join('');
+      }
+          // =========================================================================
+    // 5. SISTEM KERANJANG BELANJA (LOCALSTORAGE + WHATSAPP CHECKOUT)
+    // =========================================================================
+    function saveCart() {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+      updateCartUI();
+    }
+
+    function addToCart(productId) {
+      const product = catalogProducts.find(p => String(p.id) === String(productId));
+      if (!product) return;
+
+      const existing = cart.find(c => String(c.id) === String(productId));
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({
+          id: product.id,
+          name: product.name,
+          price: Number(product.price) || 0,
+          price_label: product.price_label || '',
+          qty: 1
+        });
+      }
+
+      saveCart();
+      showToast(`"${product.name}" masuk keranjang!`);
+    }
+
+    function changeQty(index, delta) {
+      if (!cart[index]) return;
+      cart[index].qty += delta;
+      if (cart[index].qty <= 0) {
+        cart.splice(index, 1);
+      }
+      saveCart();
+    }
+
+    function updateCartUI() {
+      const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+      const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+      document.getElementById('cart-badge').textContent = totalQty;
+      document.getElementById('mobile-cart-badge').textContent = totalQty;
+      document.getElementById('mobile-cart-total').textContent = `${formatRupiah(totalPrice)} →`;
+      document.getElementById('cart-total').textContent = formatRupiah(totalPrice);
+
+      const mobileBar = document.getElementById('mobile-cart-bar');
+      if (totalQty > 0) {
+        mobileBar.classList.remove('hidden');
+      } else {
+        mobileBar.classList.add('hidden');
+      }
+
+      const listEl = document.getElementById('cart-items');
+      if (cart.length === 0) {
+        listEl.innerHTML = `<div class="text-center py-12 text-xs text-espresso/60">Keranjang masih kosong. Yuk pilih kue favoritmu di katalog!</div>`;
+        return;
+      }
+
+      listEl.innerHTML = cart.map((item, idx) => `
+        <div class="bg-white border border-blush rounded-2xl p-3.5 flex items-center justify-between gap-3">
+          <div class="min-w-0">
+            <h4 class="font-bold text-xs text-espresso truncate">${escapeHtml(item.name)}</h4>
+            <p class="text-[11px] text-rosegold font-semibold">${formatRupiah(item.price)} / item</p>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button onclick="changeQty(${idx}, -1)" class="w-7 h-7 rounded-lg bg-cream border border-blush font-bold text-xs hover:bg-blush">−</button>
+            <span class="text-xs font-bold w-5 text-center">${item.qty}</span>
+            <button onclick="changeQty(${idx}, 1)" class="w-7 h-7 rounded-lg bg-cream border border-blush font-bold text-xs hover:bg-blush">+</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openCart() {
+      updateCartUI();
+      document.getElementById('cart-drawer').classList.remove('hidden');
+    }
+
+    function closeCart() {
+      document.getElementById('cart-drawer').classList.add('hidden');
+    }
+
+    function checkoutWhatsApp() {
+      if (cart.length === 0) {
+        showToast('Keranjang masih kosong!');
+        return;
+      }
+
+      const buyer = document.getElementById('cart-buyer-name').value.trim() || 'Pelanggan Web';
+      const pickup = document.getElementById('cart-pickup').value;
+      const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+      const itemLines = cart.map((item, i) =>
+        `${i + 1}. ${item.name} (${item.qty}x) = ${formatRupiah(item.price * item.qty)}`
+      ).join('\n');
+
+      const msg =
+        `Halo *Key Cake & Bakery*, saya mau pesan:\n\n` +
+        `*Nama:* ${buyer}\n` +
+        `*Ambil di:* ${pickup}\n\n` +
+        `*Daftar Pesanan:*\n${itemLines}\n\n` +
+        `*Estimasi Total:* ${formatRupiah(totalPrice)}\n\n` +
+        `Mohon info ketersediaannya ya kak. Terima kasih!`;
+
+      const waClean = String(storeInfo.whatsapp || '6281553027705').replace(/\D/g, '');
+      window.open(`https://wa.me/${waClean}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    // =========================================================================
+    // 6. FORMULIR PESANAN KUE CUSTOM (SIMPAN KE SUPABASE + WHATSAPP)
+    // =========================================================================
+    function toggleCandleInput() {
+      const checked = document.getElementById('addon-candle-num').checked;
+      const wrap = document.getElementById('candle-number-wrap');
+      if (checked) {
+        wrap.classList.remove('hidden');
+      } else {
+        wrap.classList.add('hidden');
+      }
+    }
+
+    document.getElementById('custom-order-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submit-custom-btn');
+      btn.disabled = true;
+
+      const customerName = document.getElementById('cust-name').value.trim();
+      const eventDate = document.getElementById('cust-date').value;
+      const cakeSize = document.getElementById('cust-size').value;
+      const cakeFlavor = document.getElementById('cust-flavor').value;
+      const pickupLocation = document.getElementById('cust-location').value;
+      const designNotes = document.getElementById('cust-notes').value.trim();
+
+      const selectedAddons = Array.from(document.querySelectorAll('input[name="addon"]:checked')).map(cb => cb.value);
+      if (document.getElementById('addon-candle-num').checked) {
+        const numVal = document.getElementById('candle-number-val').value.trim();
+        selectedAddons.push(numVal ? `Lilin Angka (${numVal})` : 'Lilin Angka');
+      }
+      const addonsText = selectedAddons.length > 0 ? selectedAddons.join(', ') : 'Tidak ada';
+
+      try {
+        await supabaseClient.from('custom_orders').insert([{
+          customer_name: customerName,
+          event_date: eventDate,
+          cake_size: cakeSize,
+          cake_flavor: cakeFlavor,
+          pickup_location: pickupLocation,
+          addons: addonsText,
+          design_notes: designNotes
+        }]);
+      } catch (err) {
+        console.warn('Log custom order dilewati:', err);
+      }
+
+      const waMsg =
+        `Halo *Key Cake & Bakery*, saya mau request *Kue Custom*:\n\n` +
+        `• *Nama:* ${customerName}\n` +
+        `• *Tanggal Acara:* ${eventDate}\n` +
+        `• *Paket / Ukuran:* ${cakeSize}\n` +
+        `• *Base Cake:* ${cakeFlavor}\n` +
+        `• *Ambil di:* ${pickupLocation}\n` +
+        `• *Add-On:* ${addonsText}\n` +
+        `• *Ucapan & Konsep:* ${designNotes}\n\n` +
+        `Mohon konfirmasi ketersediaan & detailnya ya kak!`;
+
+      const waClean = String(storeInfo.whatsapp || '6281553027705').replace(/\D/g, '');
+      btn.disabled = false;
+      window.open(`https://wa.me/${waClean}?text=${encodeURIComponent(waMsg)}`, '_blank');
+    });
+
+    // =========================================================================
+    // 7. ANIMASI SCROLL REVEAL & INISIALISASI HALAMAN
+    // =========================================================================
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    updateCartUI();
+    loadStoreData();
+  </script>
+</body>
+</html>
