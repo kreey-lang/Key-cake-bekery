@@ -823,10 +823,11 @@
         let heroUrl = document.getElementById('set-hero-url').value.trim();
         const heroFile = document.getElementById('set-hero-file');
         if (heroFile.files && heroFile.files.length > 0) {
-          btn.textContent = 'Mengunggah foto hero...';
-          heroUrl = await uploadImageToStorage(heroFile.files[0], 'hero');
-          document.getElementById('set-hero-url').value = heroUrl;
-        }
+        btn.textContent = 'Mengunggah foto hero...';
+        heroUrl = await uploadImageToStorage(heroFile.files[0], 'hero');
+        document.getElementById('set-hero-url').value = heroUrl;
+        heroFile.value = '';
+                                                              }
 
         const id = document.getElementById('set-id').value;
         const payload = {
