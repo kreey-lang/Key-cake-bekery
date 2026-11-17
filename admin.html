@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Panel Admin — Key Cake & Bakery</title>
   <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23B76E79'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='%23FFFFFF' font-family='Georgia, serif' font-weight='bold' font-size='20'%3EKC%26B%3C/text%3E%3C/svg%3E" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -41,22 +42,27 @@
   <!-- NOTIFIKASI TOAST -->
   <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-xs w-full pointer-events-none"></div>
 
-  <!-- GERBANG LOGIN PIN ADMIN -->
+  <!-- GERBANG LOGIN SUPABASE AUTH -->
   <div id="auth-gate" class="fixed inset-0 z-40 bg-cream flex items-center justify-center p-4">
     <div class="bg-white border border-blush rounded-3xl shadow-xl max-w-sm w-full p-7 text-center fade-in">
-      <div class="w-14 h-14 rounded-full bg-blush text-rosegold flex items-center justify-center mx-auto mb-4 font-brand text-2xl font-bold">
-        K&C
+      <div class="w-14 h-14 rounded-full bg-blush text-rosegold flex items-center justify-center mx-auto mb-4 font-brand text-xl font-bold">
+        KC&amp;B
       </div>
-      <h1 class="font-brand text-3xl font-bold text-espresso">Admin Key & Co.</h1>
-      <p class="text-xs text-espresso/70 mt-1 mb-6">Key Cake & Bakery • Pangkalpinang</p>
+      <h1 class="font-brand text-3xl font-bold text-espresso">Admin Portal</h1>
+      <p class="text-xs text-espresso/70 mt-1 mb-6">Key Cake &amp; Bakery • Autentikasi Pengelola</p>
       
       <form id="login-form" class="space-y-4 text-left">
         <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-espresso/70 mb-1.5">PIN Akses Pengelola</label>
-          <input type="password" id="pin-input" required placeholder="Masukkan PIN admin..."
+          <label class="block text-xs font-semibold uppercase tracking-wider text-espresso/70 mb-1.5">Email Admin</label>
+          <input type="email" id="admin-email" required autocomplete="email" placeholder="admin@keycake.id"
             class="w-full px-4 py-3 rounded-xl border border-blush bg-cream/50 focus:outline-none focus:border-rosegold text-sm" />
         </div>
-        <button type="submit"
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-espresso/70 mb-1.5">Kata Sandi</label>
+          <input type="password" id="admin-password" required autocomplete="current-password" placeholder="••••••••"
+            class="w-full px-4 py-3 rounded-xl border border-blush bg-cream/50 focus:outline-none focus:border-rosegold text-sm" />
+        </div>
+        <button type="submit" id="login-submit-btn"
           class="w-full py-3 rounded-xl bg-rosegold hover:bg-rosegoldDark text-white font-semibold text-sm transition shadow-md">
           Masuk ke Dasbor
         </button>
@@ -68,28 +74,28 @@
   <div id="admin-app" class="hidden flex-1 flex flex-col">
     
     <!-- BAR ATAS & NAVIGASI -->
-    <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-blush">
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-blush">
       <div class="max-w-5xl mx-auto px-4 py-3.5 flex items-center justify-between gap-3">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full bg-blush text-rosegold font-brand font-bold text-lg flex items-center justify-center">
-            K&C
+          <div class="w-10 h-10 rounded-full bg-blush text-rosegold font-brand font-bold text-sm flex items-center justify-center">
+            KC&amp;B
           </div>
           <div>
-            <h1 class="font-brand text-xl font-bold leading-tight text-espresso">Key Cake & Bakery</h1>
+            <h1 class="font-brand text-xl font-bold leading-tight text-espresso">Key Cake &amp; Bakery</h1>
             <div class="flex items-center gap-1.5 text-[11px] text-emerald-700 font-medium">
               <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              Supabase Terhubung Real-Time
+              <span id="admin-user-badge">Sesi Terautentikasi</span>
             </div>
           </div>
         </div>
         <div class="flex items-center gap-2">
-          <a href="index.html" target="_blank"
+          <a href="index.html" target="_blank" rel="noopener"
             class="px-3 py-2 rounded-xl border border-blush text-xs font-semibold text-espresso hover:bg-blush/50 transition">
             Lihat Web ↗
           </a>
           <button onclick="logoutAdmin()"
-            class="px-3 py-2 rounded-xl bg-espresso/5 hover:bg-espresso/10 text-xs font-semibold text-espresso transition">
-            Kunci
+            class="px-3 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-xs font-semibold text-red-700 transition">
+            Keluar
           </button>
         </div>
       </div>
@@ -97,7 +103,7 @@
       <div class="max-w-5xl mx-auto px-4 flex gap-2 overflow-x-auto pb-2.5">
         <button onclick="switchTab('products')" id="tab-products"
           class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold bg-rosegold text-white transition whitespace-nowrap">
-          Katalog & Stok Produk
+          Katalog &amp; Stok Produk
         </button>
         <button onclick="switchTab('orders')" id="tab-orders"
           class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold bg-cream text-espresso/70 hover:bg-blush/60 transition whitespace-nowrap">
@@ -105,7 +111,7 @@
         </button>
         <button onclick="switchTab('settings')" id="tab-settings"
           class="tab-btn px-4 py-2 rounded-xl text-xs font-semibold bg-cream text-espresso/70 hover:bg-blush/60 transition whitespace-nowrap">
-          Info Toko & Sosmed
+          Info Toko &amp; Sosmed
         </button>
       </div>
     </header>
@@ -116,8 +122,8 @@
       <section id="section-products" class="space-y-5 fade-in">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 class="font-brand text-2xl font-bold text-espresso">Kelola Menu & Foto Kue</h2>
-            <p class="text-xs text-espresso/70">Setiap perubahan foto, harga, atau urutan langsung tampil otomatis di website utama.</p>
+            <h2 class="font-brand text-2xl font-bold text-espresso">Kelola Menu &amp; Foto Kue</h2>
+            <p class="text-xs text-espresso/70">Setiap perubahan foto, varian harga, atau urutan langsung tampil otomatis di website utama.</p>
           </div>
           <button onclick="openProductModal()"
             class="px-4 py-2.5 rounded-xl bg-rosegold hover:bg-rosegoldDark text-white text-xs font-semibold shadow-sm transition flex items-center gap-1.5">
@@ -137,7 +143,7 @@
         <div class="flex items-center justify-between">
           <div>
             <h2 class="font-brand text-2xl font-bold text-espresso">Riwayat Pesanan Kue Custom</h2>
-            <p class="text-xs text-espresso/70">Data pesanan yang dikirim pelanggan melalui formulir custom di website.</p>
+            <p class="text-xs text-espresso/70">Kelola status pesanan masuk dan hubungi pelanggan langsung via WhatsApp.</p>
           </div>
           <button onclick="loadCustomOrders()" class="px-3 py-2 rounded-xl border border-blush bg-white text-xs font-semibold hover:bg-blush/40">
             Segarkan
@@ -149,38 +155,72 @@
       <!-- TAB 3: PENGATURAN TOKO -->
       <section id="section-settings" class="hidden space-y-5 fade-in">
         <div>
-          <h2 class="font-brand text-2xl font-bold text-espresso">Pengaturan Profil Toko & Media Sosial</h2>
-          <p class="text-xs text-espresso/70">Perbarui nomor WhatsApp, alamat cabang, dan akun media sosial resmi.</p>
+          <h2 class="font-brand text-2xl font-bold text-espresso">Pengaturan Profil Toko &amp; Media Sosial</h2>
+          <p class="text-xs text-espresso/70">Perbarui nomor WhatsApp, foto utama hero, alamat cabang, dan URL akun media sosial resmi.</p>
         </div>
 
-        <form id="settings-form" class="bg-white border border-blush rounded-2xl p-5 space-y-4 shadow-sm">
+        <form id="settings-form" class="bg-white border border-blush rounded-2xl p-5 space-y-5 shadow-sm">
           <input type="hidden" id="set-id" />
+
+          <!-- FOTO HERO UTAMA -->
+          <div class="bg-cream/70 border border-dashed border-rosegold/50 rounded-2xl p-4 flex flex-col sm:flex-row items-center gap-4">
+            <img id="set-hero-preview" src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=400&q=80" alt="Preview Hero"
+              class="w-20 h-20 rounded-full object-cover border-2 border-white shadow-sm shrink-0" />
+            <div class="flex-1 w-full space-y-2">
+              <label class="block text-xs font-semibold text-espresso">Foto Utama Hero (Halaman Depan)</label>
+              <input type="file" id="set-hero-file" accept="image/*" onchange="previewHeroImage(event)"
+                class="block w-full text-xs text-espresso/80 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-rosegold file:text-white hover:file:bg-rosegoldDark cursor-pointer" />
+              <input type="url" id="set-hero-url" placeholder="Atau tempel URL foto hero..."
+                class="w-full px-3 py-2 rounded-xl border border-blush text-xs bg-white" />
+            </div>
+          </div>
+
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="block text-xs font-semibold mb-1">Nama Toko</label>
               <input type="text" id="set-name" required class="w-full px-3.5 py-2.5 rounded-xl border border-blush text-sm bg-cream/30" />
             </div>
             <div>
-              <label class="block text-xs font-semibold mb-1">Nomor WhatsApp (Format 628...)</label>
+              <label class="block text-xs font-semibold mb-1">Nomor WhatsApp Toko (Format 628...)</label>
               <input type="text" id="set-wa" required class="w-full px-3.5 py-2.5 rounded-xl border border-blush text-sm bg-cream/30" />
             </div>
             <div>
-              <label class="block text-xs font-semibold mb-1">Instagram</label>
-              <input type="text" id="set-ig" class="w-full px-3.5 py-2.5 rounded-xl border border-blush text-sm bg-cream/30" />
+              <label class="block text-xs font-semibold mb-1">Username Instagram</label>
+              <input type="text" id="set-ig" placeholder="@key.cakebakery" class="w-full px-3.5 py-2.5 rounded-xl border border-blush text-sm bg-cream/30" />
             </div>
             <div>
-              <label class="block text-xs font-semibold mb-1">TikTok</label>
-              <input type="text" id="set-tiktok" class="w-full px-3.5 py-2.5 rounded-xl border border-blush text-sm bg-cream/30" />
+              <label class="block text-xs font-semibold mb-1">URL Profil Instagram</label>
+              <input type="url" id="set-ig-url" placeholder="https://instagram.com/key.cakebakery" class="w-full px-3.5 py-2.5 rounded-xl border border-blush text-sm bg-cream/30" />
             </div>
             <div>
-              <label class="block text-xs font-semibold mb-1">Facebook</label>
-              <input type="text" id="set-fb" class="w-full px-3.5 py-2.5 rounded-xl border border-blush text-sm bg-cream/30" />
+              <label class="block text-xs font-semibold mb-1">Nama Akun TikTok</label>
+              <input type="text" id="set-tiktok" placeholder="@key.cakebakery" class="w-full px-3.5 py-2.5 rounded-xl border border-blush text-sm bg-cream/30" />
             </div>
+            <div>
+              <label class="block text-xs font-semibold mb-1">URL Profil TikTok (Kosongkan jika belum ada)</label>
+              <input type="url" id="set-tiktok-url" placeholder="https://www.tiktok.com/@username" class="w-full px-3.5 py-2.5 rounded-xl border border-blush text-sm bg-cream/30" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold mb-1">Nama Akun Facebook</label>
+              <input type="text" id="set-fb" placeholder="Key Cake & Bakery" class="w-full px-3.5 py-2.5 rounded-xl border border-blush text-sm bg-cream/30" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold mb-1">URL Profil / Halaman Facebook</label>
+              <input type="url" id="set-fb-url" placeholder="https://www.facebook.com/username" class="w-full px-3.5 py-2.5 rounded-xl border border-blush text-sm bg-cream/30" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="block text-xs font-semibold mb-1">Jam Operasional</label>
               <input type="text" id="set-hours" class="w-full px-3.5 py-2.5 rounded-xl border border-blush text-sm bg-cream/30" />
             </div>
+            <div>
+              <label class="block text-xs font-semibold mb-1">Catatan Harga</label>
+              <input type="text" id="set-note" class="w-full px-3.5 py-2.5 rounded-xl border border-blush text-sm bg-cream/30" />
+            </div>
           </div>
+
           <div>
             <label class="block text-xs font-semibold mb-1">Alamat Outlet Opas Indah</label>
             <input type="text" id="set-outlet" class="w-full px-3.5 py-2.5 rounded-xl border border-blush text-sm bg-cream/30" />
@@ -189,10 +229,7 @@
             <label class="block text-xs font-semibold mb-1">Alamat Rumah Semabung</label>
             <input type="text" id="set-home" class="w-full px-3.5 py-2.5 rounded-xl border border-blush text-sm bg-cream/30" />
           </div>
-          <div>
-            <label class="block text-xs font-semibold mb-1">Catatan Harga</label>
-            <input type="text" id="set-note" class="w-full px-3.5 py-2.5 rounded-xl border border-blush text-sm bg-cream/30" />
-          </div>
+
           <div class="pt-2">
             <button type="submit" id="save-settings-btn"
               class="px-5 py-2.5 rounded-xl bg-rosegold hover:bg-rosegoldDark text-white text-xs font-semibold transition">
@@ -204,9 +241,8 @@
 
     </main>
   </div>
-
-  <!-- MODAL TAMBAH / EDIT PRODUK -->
-  <div id="product-modal" class="hidden fixed inset-0 z-50 bg-espresso/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+    <!-- MODAL TAMBAH / EDIT PRODUK -->
+  <div id="product-modal" class="hidden fixed inset-0 z-50 bg-espresso/50 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
     <div class="bg-white border border-blush rounded-3xl max-w-lg w-full p-6 shadow-2xl my-auto fade-in">
       <div class="flex items-center justify-between pb-3 border-b border-blush">
         <h3 id="modal-title" class="font-brand text-2xl font-bold text-espresso">Tambah Produk</h3>
@@ -232,16 +268,16 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-semibold mb-1">Nama Kue / Produk *</label>
-            <input type="text" id="prod-name" required placeholder="Contoh: Kue Ultah Karakter"
+            <input type="text" id="prod-name" required placeholder="Contoh: Donat Empuk Ulang Tahun"
               class="w-full px-3.5 py-2 rounded-xl border border-blush text-sm bg-cream/30" />
           </div>
           <div>
             <label class="block text-xs font-semibold mb-1">Kategori *</label>
             <select id="prod-category" class="w-full px-3.5 py-2 rounded-xl border border-blush text-sm bg-cream/30">
               <option value="Kue Ulang Tahun">Kue Ulang Tahun</option>
-              <option value="Custom & Karakter">Custom & Karakter</option>
+              <option value="Custom & Karakter">Custom &amp; Karakter</option>
               <option value="Donat">Donat</option>
-              <option value="Bolu & Brownies">Bolu & Brownies</option>
+              <option value="Bolu & Brownies">Bolu &amp; Brownies</option>
             </select>
           </div>
         </div>
@@ -249,16 +285,29 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-semibold mb-1">Harga Dasar Angka (Rp) *</label>
-            <input type="number" id="prod-price" required min="0" step="500" placeholder="Contoh: 70000"
+            <input type="number" id="prod-price" required min="0" step="500" placeholder="Contoh: 18000"
               class="w-full px-3.5 py-2 rounded-xl border border-blush text-sm bg-cream/30" />
-            <span class="text-[10px] text-espresso/60">Dipakai untuk hitungan keranjang belanja.</span>
+            <span class="text-[10px] text-espresso/60">Dipakai jika produk tidak memiliki varian.</span>
           </div>
           <div>
             <label class="block text-xs font-semibold mb-1">Label Tampilan Harga</label>
             <input type="text" id="prod-price-label" placeholder="Contoh: Mulai Rp 70.000"
               class="w-full px-3.5 py-2 rounded-xl border border-blush text-sm bg-cream/30" />
-            <span class="text-[10px] text-espresso/60">Opsional (kosongkan jika harga pas).</span>
+            <span class="text-[10px] text-espresso/60">Opsional (kosongkan jika memakai varian/harga pas).</span>
           </div>
+        </div>
+
+        <!-- BUILDER VARIAN HARGA (OPSIONAL) -->
+        <div class="bg-cream/50 border border-blush rounded-2xl p-3 space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-semibold text-espresso">Varian Ukuran / Isi (Opsional)</label>
+            <button type="button" onclick="addVariantRow()"
+              class="px-2.5 py-1 rounded-lg bg-blush text-rosegold text-[11px] font-bold hover:bg-rosegold hover:text-white transition">
+              + Tambah Varian
+            </button>
+          </div>
+          <p class="text-[10px] text-espresso/65">Contoh: Isi 6 = 18000, Isi 12 = 35000. Jika diisi, pembeli bisa memilih varian sebelum masuk keranjang.</p>
+          <div id="variants-editor" class="space-y-2"></div>
         </div>
 
         <div>
@@ -298,42 +347,68 @@
   </div>
     <script>
     // =========================================================================
-    // 1. KONFIGURASI SUPABASE & PIN ADMIN
+    // 1. KONFIGURASI SUPABASE AUTH
     // =========================================================================
     const SUPABASE_URL = 'https://ornbvimipxabeywxlqil.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_-jX1OAH23DCvKuyVXHG_cg_iv4ENIsk';
-    const ADMIN_PIN = 'keycake';
     const BUCKET_NAME = 'product-images';
 
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     let allProducts = [];
 
     // =========================================================================
-    // 2. SISTEM LOGIN PIN
+    // 2. AUTENTIKASI SUPABASE (EMAIL & PASSWORD)
     // =========================================================================
-    function checkAuth() {
-      if (sessionStorage.getItem('keycake_admin_auth') === 'true') {
-        document.getElementById('auth-gate').classList.add('hidden');
-        document.getElementById('admin-app').classList.remove('hidden');
+    function setAuthenticatedUI(session) {
+      const authGate = document.getElementById('auth-gate');
+      const adminApp = document.getElementById('admin-app');
+
+      if (session && session.user) {
+        authGate.classList.add('hidden');
+        adminApp.classList.remove('hidden');
+        document.getElementById('admin-user-badge').textContent = session.user.email || 'Admin Terautentikasi';
         loadProducts();
+      } else {
+        authGate.classList.remove('hidden');
+        adminApp.classList.add('hidden');
       }
     }
 
-    document.getElementById('login-form').addEventListener('submit', (e) => {
+    async function initAuth() {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      setAuthenticatedUI(session);
+
+      supabaseClient.auth.onAuthStateChange((_event, newSession) => {
+        setAuthenticatedUI(newSession);
+      });
+    }
+
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const input = document.getElementById('pin-input').value.trim();
-      if (input === ADMIN_PIN) {
-        sessionStorage.setItem('keycake_admin_auth', 'true');
-        checkAuth();
-        showToast('Berhasil masuk ke panel admin!', 'success');
-      } else {
-        showToast('PIN salah! Gunakan PIN: keycake', 'error');
+      const btn = document.getElementById('login-submit-btn');
+      btn.disabled = true;
+      btn.textContent = 'Memverifikasi...';
+
+      const email = document.getElementById('admin-email').value.trim();
+      const password = document.getElementById('admin-password').value;
+
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+      btn.disabled = false;
+      btn.textContent = 'Masuk ke Dasbor';
+
+      if (error) {
+        showToast('Login gagal: Email atau kata sandi tidak valid.', 'error');
+        return;
       }
+
+      showToast('Berhasil masuk ke panel admin!', 'success');
+      setAuthenticatedUI(data.session);
     });
 
-    function logoutAdmin() {
-      sessionStorage.removeItem('keycake_admin_auth');
-      location.reload();
+    async function logoutAdmin() {
+      await supabaseClient.auth.signOut();
+      showToast('Anda telah keluar dari panel admin.', 'success');
     }
 
     // =========================================================================
@@ -378,10 +453,37 @@
     function formatRupiah(num) {
       return 'Rp ' + new Intl.NumberFormat('id-ID').format(num || 0);
     }
+          // =========================================================================
+    // 4. CRUD PRODUK, VARIAN HARGA & UPLOAD FOTO SUPABASE STORAGE
+    // =========================================================================
+    function addVariantRow(label = '', price = '') {
+      const container = document.getElementById('variants-editor');
+      const row = document.createElement('div');
+      row.className = 'variant-row flex items-center gap-2';
+      row.innerHTML = `
+        <input type="text" placeholder="Nama varian (misal: Isi 6)" value="${escapeHtml(label)}"
+          class="var-label flex-1 px-3 py-1.5 rounded-lg border border-blush bg-white text-xs" />
+        <input type="number" placeholder="Harga (18000)" min="0" step="500" value="${escapeHtml(price)}"
+          class="var-price w-28 px-3 py-1.5 rounded-lg border border-blush bg-white text-xs" />
+        <button type="button" onclick="this.parentElement.remove()"
+          class="px-2 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-bold hover:bg-red-100">✕</button>
+      `;
+      container.appendChild(row);
+    }
 
-    // =========================================================================
-    // 4. CRUD PRODUK & UPLOAD FOTO SUPABASE STORAGE
-    // =========================================================================
+    function collectVariants() {
+      const rows = document.querySelectorAll('#variants-editor .variant-row');
+      const variants = [];
+      rows.forEach(row => {
+        const label = row.querySelector('.var-label').value.trim();
+        const price = Number(row.querySelector('.var-price').value);
+        if (label && price > 0) {
+          variants.push({ label, price });
+        }
+      });
+      return variants;
+    }
+
     async function loadProducts() {
       const loader = document.getElementById('products-loading');
       const listEl = document.getElementById('products-list');
@@ -408,9 +510,13 @@
 
       listEl.innerHTML = allProducts.map(item => {
         const imgUrl = item.image_url || 'https://placehold.co/200x200/FCE7EB/B76E79?text=Key+Cake';
-        const priceDisplay = item.price_label ? escapeHtml(item.price_label) : formatRupiah(item.price);
+        const variants = Array.isArray(item.variants) ? item.variants : [];
+        const priceDisplay = variants.length > 0
+          ? variants.map(v => `${escapeHtml(v.label)} (${formatRupiah(v.price)})`).join(' • ')
+          : (item.price_label ? escapeHtml(item.price_label) : formatRupiah(item.price));
+
         return `
-          <div class="bg-white border ${item.is_visible ? 'border-blush' : 'border-gray-200 opacity-70'} rounded-2xl p-4 shadow-xs flex gap-3.5 transition">
+          <div class="bg-white border ${item.is_visible ? 'border-blush' : 'border-gray-200 opacity-70'} rounded-2xl p-4 shadow-sm flex gap-3.5 transition">
             <img src="${escapeHtml(imgUrl)}" alt="${escapeHtml(item.name)}"
               class="w-24 h-24 rounded-2xl object-cover border border-blush bg-cream shrink-0" />
             <div class="flex-1 min-w-0 flex flex-col justify-between">
@@ -424,7 +530,7 @@
                   </span>
                 </div>
                 <h3 class="font-bold text-sm text-espresso mt-1 truncate">${escapeHtml(item.name)}</h3>
-                <p class="text-xs font-semibold text-rosegold">${priceDisplay}</p>
+                <p class="text-xs font-semibold text-rosegold line-clamp-1">${priceDisplay}</p>
                 <p class="text-[11px] text-espresso/65 line-clamp-1 mt-0.5">${escapeHtml(item.description || '')}</p>
               </div>
 
@@ -453,6 +559,7 @@
       form.reset();
       document.getElementById('prod-id').value = '';
       document.getElementById('prod-existing-image').value = '';
+      document.getElementById('variants-editor').innerHTML = '';
       document.getElementById('prod-preview').src = 'https://placehold.co/150x150/FCE7EB/B76E79?text=Foto+Kue';
       document.getElementById('modal-title').textContent = 'Tambah Produk Baru';
       document.getElementById('prod-order').value = allProducts.length + 1;
@@ -472,6 +579,10 @@
           document.getElementById('prod-order').value = item.display_order || 0;
           document.getElementById('prod-ready').checked = !!item.is_ready;
           document.getElementById('prod-visible').checked = !!item.is_visible;
+
+          if (Array.isArray(item.variants) && item.variants.length > 0) {
+            item.variants.forEach(v => addVariantRow(v.label, v.price));
+          }
         }
       }
 
@@ -487,6 +598,22 @@
       if (file) {
         document.getElementById('prod-preview').src = URL.createObjectURL(file);
       }
+      }
+          async function uploadImageToStorage(file, prefix = 'cake') {
+      const ext = file.name.split('.').pop().toLowerCase();
+      const uniqueName = `${prefix}-${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${ext}`;
+
+      const { error: uploadError } = await supabaseClient.storage
+        .from(BUCKET_NAME)
+        .upload(uniqueName, file, { cacheControl: '3600', upsert: false });
+
+      if (uploadError) throw new Error('Upload foto gagal: ' + uploadError.message);
+
+      const { data: publicUrlData } = supabaseClient.storage
+        .from(BUCKET_NAME)
+        .getPublicUrl(uniqueName);
+
+      return publicUrlData.publicUrl;
     }
 
     document.getElementById('product-form').addEventListener('submit', async (e) => {
@@ -501,29 +628,21 @@
         const fileInput = document.getElementById('prod-file');
 
         if (fileInput.files && fileInput.files.length > 0) {
-          const file = fileInput.files[0];
-          const ext = file.name.split('.').pop().toLowerCase();
-          const uniqueName = `cake-${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${ext}`;
-
           saveBtn.textContent = 'Mengunggah foto...';
-          const { error: uploadError } = await supabaseClient.storage
-            .from(BUCKET_NAME)
-            .upload(uniqueName, file, { cacheControl: '3600', upsert: false });
-
-          if (uploadError) throw new Error('Upload foto gagal: ' + uploadError.message);
-
-          const { data: publicUrlData } = supabaseClient.storage
-            .from(BUCKET_NAME)
-            .getPublicUrl(uniqueName);
-
-          imageUrl = publicUrlData.publicUrl;
+          imageUrl = await uploadImageToStorage(fileInput.files[0], 'cake');
         }
+
+        const variants = collectVariants();
+        const basePrice = variants.length > 0
+          ? Math.min(...variants.map(v => v.price))
+          : (Number(document.getElementById('prod-price').value) || 0);
 
         const payload = {
           name: document.getElementById('prod-name').value.trim(),
           category: document.getElementById('prod-category').value,
-          price: Number(document.getElementById('prod-price').value) || 0,
+          price: basePrice,
           price_label: document.getElementById('prod-price-label').value.trim() || null,
+          variants: variants,
           description: document.getElementById('prod-desc').value.trim(),
           image_url: imageUrl || null,
           display_order: Number(document.getElementById('prod-order').value) || 0,
@@ -580,8 +699,15 @@
     }
 
     // =========================================================================
-    // 5. RIWAYAT PESANAN CUSTOM
+    // 5. RIWAYAT PESANAN CUSTOM & FOLLOW-UP WHATSAPP
     // =========================================================================
+    function formatWaLink(rawPhone, customerName) {
+      let digits = String(rawPhone || '').replace(/\D/g, '');
+      if (digits.startsWith('0')) digits = '62' + digits.slice(1);
+      const text = encodeURIComponent(`Halo Kak ${customerName}, kami dari *Key Cake & Bakery* ingin mengonfirmasi detail pesanan kue custom Anda.`);
+      return `https://wa.me/${digits}?text=${text}`;
+    }
+
     async function loadCustomOrders() {
       const listEl = document.getElementById('orders-list');
       listEl.innerHTML = '<div class="text-xs text-espresso/60 py-6 text-center">Memuat pesanan custom...</div>';
@@ -590,7 +716,7 @@
         .from('custom_orders')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(30);
+        .limit(50);
 
       if (error) {
         listEl.innerHTML = `<div class="text-xs text-red-600">Error: ${escapeHtml(error.message)}</div>`;
@@ -602,30 +728,67 @@
         return;
       }
 
-      listEl.innerHTML = data.map(o => `
-        <div class="bg-white border border-blush rounded-2xl p-4 shadow-xs space-y-2">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <div>
-              <span class="font-bold text-sm text-espresso">${escapeHtml(o.customer_name)}</span>
-              <span class="text-xs text-espresso/60 ml-2">• Acara: ${escapeHtml(o.event_date)}</span>
+      listEl.innerHTML = data.map(o => {
+        const currentStatus = o.status || 'Baru';
+        const waButton = o.customer_wa
+          ? `<a href="${formatWaLink(o.customer_wa, o.customer_name)}" target="_blank" rel="noopener"
+              class="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-semibold transition">
+              Chat WA (${escapeHtml(o.customer_wa)}) ↗
+            </a>`
+          : '';
+
+        return `
+          <div class="bg-white border border-blush rounded-2xl p-4 shadow-sm space-y-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <span class="font-bold text-sm text-espresso">${escapeHtml(o.customer_name)}</span>
+                <span class="text-xs text-espresso/60 ml-2">• Acara: <strong>${escapeHtml(o.event_date)}</strong></span>
+              </div>
+              <div class="flex items-center gap-2">
+                ${waButton}
+                <select onchange="updateOrderStatus('${o.id}', this.value)"
+                  class="px-2.5 py-1 rounded-lg border border-blush bg-cream text-[11px] font-semibold text-espresso">
+                  <option value="Baru" ${currentStatus === 'Baru' ? 'selected' : ''}>Baru</option>
+                  <option value="Diproses" ${currentStatus === 'Diproses' ? 'selected' : ''}>Diproses</option>
+                  <option value="Selesai" ${currentStatus === 'Selesai' ? 'selected' : ''}>Selesai</option>
+                  <option value="Dibatalkan" ${currentStatus === 'Dibatalkan' ? 'selected' : ''}>Dibatalkan</option>
+                </select>
+              </div>
             </div>
-            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blush text-rosegold">
-              Ambil: ${escapeHtml(o.pickup_location || '-')}
-            </span>
+            <div class="text-xs text-espresso/80 grid grid-cols-1 sm:grid-cols-2 gap-1 pt-1 border-t border-blush/50">
+              <div><strong>Ukuran:</strong> ${escapeHtml(o.cake_size || '-')}</div>
+              <div><strong>Base Cake:</strong> ${escapeHtml(o.cake_flavor || '-')}</div>
+              <div><strong>Lokasi Ambil:</strong> ${escapeHtml(o.pickup_location || '-')}</div>
+              <div><strong>Add-on:</strong> ${escapeHtml(o.addons || 'Tidak ada')}</div>
+              <div class="sm:col-span-2"><strong>Catatan Desain:</strong> ${escapeHtml(o.design_notes || '-')}</div>
+            </div>
           </div>
-          <div class="text-xs text-espresso/80 grid grid-cols-1 sm:grid-cols-2 gap-1">
-            <div><strong>Ukuran:</strong> ${escapeHtml(o.cake_size || '-')}</div>
-            <div><strong>Base Cake:</strong> ${escapeHtml(o.cake_flavor || '-')}</div>
-            <div class="sm:col-span-2"><strong>Add-on:</strong> ${escapeHtml(o.addons || 'Tidak ada')}</div>
-            <div class="sm:col-span-2"><strong>Catatan:</strong> ${escapeHtml(o.design_notes || '-')}</div>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
-    // =========================================================================
+    async function updateOrderStatus(orderId, newStatus) {
+      const { error } = await supabaseClient
+        .from('custom_orders')
+        .update({ status: newStatus })
+        .eq('id', orderId);
+
+      if (error) {
+        showToast('Gagal memperbarui status: ' + error.message, 'error');
+        return;
+      }
+      showToast(`Status pesanan diubah ke "${newStatus}".`, 'success');
+      }
+          // =========================================================================
     // 6. PENGATURAN PROFIL TOKO
     // =========================================================================
+    function previewHeroImage(event) {
+      const file = event.target.files[0];
+      if (file) {
+        document.getElementById('set-hero-preview').src = URL.createObjectURL(file);
+      }
+    }
+
     async function loadSettings() {
       const { data, error } = await supabaseClient.from('store_settings').select('*').limit(1);
       if (error || !data || data.length === 0) return;
@@ -635,8 +798,15 @@
       document.getElementById('set-name').value = s.store_name || '';
       document.getElementById('set-wa').value = s.whatsapp || '';
       document.getElementById('set-ig').value = s.instagram || '';
+      document.getElementById('set-ig-url').value = s.instagram_url || '';
       document.getElementById('set-tiktok').value = s.tiktok || '';
+      document.getElementById('set-tiktok-url').value = s.tiktok_url || '';
       document.getElementById('set-fb').value = s.facebook || '';
+      document.getElementById('set-fb-url').value = s.facebook_url || '';
+      document.getElementById('set-hero-url').value = s.hero_image_url || '';
+      if (s.hero_image_url) {
+        document.getElementById('set-hero-preview').src = s.hero_image_url;
+      }
       document.getElementById('set-hours').value = s.open_hours || '';
       document.getElementById('set-outlet').value = s.address_outlet || '';
       document.getElementById('set-home').value = s.address_home || '';
@@ -649,35 +819,48 @@
       btn.disabled = true;
       btn.textContent = 'Menyimpan...';
 
-      const id = document.getElementById('set-id').value;
-      const payload = {
-        store_name: document.getElementById('set-name').value.trim(),
-        whatsapp: document.getElementById('set-wa').value.trim(),
-        instagram: document.getElementById('set-ig').value.trim(),
-        tiktok: document.getElementById('set-tiktok').value.trim(),
-        facebook: document.getElementById('set-fb').value.trim(),
-        open_hours: document.getElementById('set-hours').value.trim(),
-        address_outlet: document.getElementById('set-outlet').value.trim(),
-        address_home: document.getElementById('set-home').value.trim(),
-        price_note: document.getElementById('set-note').value.trim(),
-        updated_at: new Date().toISOString()
-      };
+      try {
+        let heroUrl = document.getElementById('set-hero-url').value.trim();
+        const heroFile = document.getElementById('set-hero-file');
+        if (heroFile.files && heroFile.files.length > 0) {
+          btn.textContent = 'Mengunggah foto hero...';
+          heroUrl = await uploadImageToStorage(heroFile.files[0], 'hero');
+          document.getElementById('set-hero-url').value = heroUrl;
+        }
 
-      const { error } = id
-        ? await supabaseClient.from('store_settings').update(payload).eq('id', id)
-        : await supabaseClient.from('store_settings').insert([payload]);
+        const id = document.getElementById('set-id').value;
+        const payload = {
+          store_name: document.getElementById('set-name').value.trim(),
+          whatsapp: document.getElementById('set-wa').value.trim(),
+          instagram: document.getElementById('set-ig').value.trim(),
+          instagram_url: document.getElementById('set-ig-url').value.trim(),
+          tiktok: document.getElementById('set-tiktok').value.trim(),
+          tiktok_url: document.getElementById('set-tiktok-url').value.trim(),
+          facebook: document.getElementById('set-fb').value.trim(),
+          facebook_url: document.getElementById('set-fb-url').value.trim(),
+          hero_image_url: heroUrl || null,
+          open_hours: document.getElementById('set-hours').value.trim(),
+          address_outlet: document.getElementById('set-outlet').value.trim(),
+          address_home: document.getElementById('set-home').value.trim(),
+          price_note: document.getElementById('set-note').value.trim(),
+          updated_at: new Date().toISOString()
+        };
 
-      btn.disabled = false;
-      btn.textContent = 'Simpan Pengaturan Toko';
+        const { error } = id
+          ? await supabaseClient.from('store_settings').update(payload).eq('id', id)
+          : await supabaseClient.from('store_settings').insert([payload]);
 
-      if (error) {
-        showToast('Gagal menyimpan pengaturan: ' + error.message, 'error');
-      } else {
+        if (error) throw error;
         showToast('Pengaturan toko berhasil disimpan!', 'success');
+      } catch (err) {
+        showToast('Gagal menyimpan pengaturan: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Simpan Pengaturan Toko';
       }
     });
 
-    checkAuth();
+    initAuth();
   </script>
 </body>
 </html>
